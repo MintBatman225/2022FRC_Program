@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\..\\..\\..\\.wpilib"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.server.launchMode": "Standard"
+	}
+}
