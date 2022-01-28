@@ -4,19 +4,31 @@
 
 package frc.robot.commands;
 
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.InnerDrive;
+import frc.robot.subsystems.Solenoid;
+
 
 public class Drivewithjoysticks extends CommandBase {
   private final DriveTrain driveTrain;
+  private final InnerDrive innerDrive;
+  private final Solenoid solenoid;
   /** Creates a new Drivewithjoysticks. */
-  public Drivewithjoysticks(DriveTrain dt) {
+  public Drivewithjoysticks(DriveTrain dt, InnerDrive di, Solenoid ds) {
     driveTrain = dt;
+    innerDrive = di;
+    solenoid = ds;
+    addRequirements(solenoid);
     addRequirements(driveTrain);
+    addRequirements(innerDrive);
     // Use addRequirements() here to declare subsystem dependencies.
+
   }
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -26,6 +38,8 @@ public class Drivewithjoysticks extends CommandBase {
   @Override
   public void execute() {
     driveTrain.drivewithjoysticks(RobotContainer.driverJoystick, Constants.DRIVETRAINSPEED);
+    InnerDrive.drivewithjoysticks(RobotContainer.driverJoystick, Constants.INNERDRIVESPEED);
+
   }
 
   // Called once the command ends or is interrupted.
