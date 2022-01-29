@@ -32,21 +32,18 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class Robot extends TimedRobot {
 
+  public final DoubleSolenoid m_doubleSolenoid =
+  new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5 );
 
+//private static final int kSolenoidButton = 1;
+public static final int kDoubleSolenoidForward = 2;
+public static final int kDoubleSolenoidReverse = 3;
+ public static XboxController driverjoystick;
   // Solenoid corresponds to a single solenoid.
  // private final Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
 
   // DoubleSolenoid corresponds to a double solenoid.
-  private final DoubleSolenoid m_doubleSolenoid =
-      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5 );
 
-  //private static final int kSolenoidButton = 1;
-  private static final int kDoubleSolenoidForward = 2;
-  private static final int kDoubleSolenoidReverse = 3;
-
-  public static XboxController driverjoystick;
-
-  
  
 
   
@@ -54,7 +51,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-  
+    if (driverjoystick.getRawButton(kDoubleSolenoidForward)) {
+      m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    } else if (driverjoystick.getRawButton(kDoubleSolenoidReverse)) {
+      m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
     /*
      * The output of GetRawButton is true/false depending on whether
      * the button is pressed; Set takes a boolean for whether
@@ -69,10 +70,6 @@ public class Robot extends TimedRobot {
      *
      */
 
-    if (driverjoystick.getRawButton(kDoubleSolenoidForward)) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    } else if (driverjoystick.getRawButton(kDoubleSolenoidReverse)) {
-      m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
+  
   }
 }
