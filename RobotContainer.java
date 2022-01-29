@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveforwardTimed;
 import frc.robot.commands.Drivewithjoysticks;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.InnerDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -18,39 +23,72 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  Compressor Comp = new Compressor( PneumaticsModuleType.CTREPCM);
+  
+  private final DoubleSolenoid m_doubleSolenoid =
+  new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  
+  
+
+
+//private static final int kDoubleSolenoidForward = 2;
+//private static final int kDoubleSolenoidReverse = 3;
 
   // The robot's subsystems and commands are defined here...
   
 
   private final DriveTrain driveTrain;
-  private final Drivewithjoysticks drivewithjoysticks;
+  private final InnerDrive innerDrive;
+
+  private Drivewithjoysticks drivewithjoysticks;
   private final DriveforwardTimed driveforwardTimed;
   public static XboxController driverJoystick;
+  public static Compressor comp;
+  
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    driveTrain = new DriveTrain();
-    drivewithjoysticks = new Drivewithjoysticks(driveTrain);
-    drivewithjoysticks.addRequirements(driveTrain);
-    driveTrain.setDefaultCommand(drivewithjoysticks);
+    
 
-    driveforwardTimed = new DriveforwardTimed(driveTrain);
+    driveTrain = new DriveTrain();
+    innerDrive = new InnerDrive();
+   
+   
+    drivewithjoysticks = new Drivewithjoysticks(driveTrain, innerDrive);
+    driveforwardTimed = new DriveforwardTimed(driveTrain, innerDrive);
     driveforwardTimed.addRequirements(driveTrain);
+    driveforwardTimed.addRequirements(innerDrive);
 
     driverJoystick = new XboxController(Constants.JOYSTICK_NUMBER);
+    
+    drivewithjoysticks.addRequirements(innerDrive);
+    
+    innerDrive.setDefaultCommand(drivewithjoysticks);
+
+   
 
 
     // Configure the button bindings
     configureButtonBindings();
+  
+  
   }
-
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+   
+    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON2)) {
+      m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    } else if (driverJoystick.getRawButton(Constants.XBOX_BUTTON2)) {
+      m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+  
+    }
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
